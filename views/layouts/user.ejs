@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f1116;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        /* ===== TOP HEADER ===== */
+        .top-header {
+            width: 100%;
+            background: #15171f;
+            padding: 16px 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            border-bottom: 1px solid #1f2230;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0d6efd;
+            letter-spacing: 1px;
+        }
+
+        .header-toggle-btn {
+            border: none;
+            background: transparent;
+            font-size: 1.7rem;
+            color: #e5e5e5;
+        }
+
+        #themeToggle {
+            margin-left: auto !important;
+            /* dorong ke kanan */
+            margin-right: 10px !important;
+            /* mepet sisi kanan */
+            font-size: 1.4rem;
+        }
+
+
+        @media(max-width: 768px) {
+            .header-toggle-btn {
+                display: block;
+            }
+
+            #themeToggle {
+                margin-left: auto !important;
+                /* Dorong icon ke kanan */
+                margin-right: 10px !important;
+                /* Mepet sisi kanan */
+            }
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #15171f;
+            border-right: 1px solid #1f2230;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 90px;
+            transition: 0.3s ease;
+            z-index: 900;
+        }
+
+        /* COLLAPSED MODE (DESKTOP) */
+        @media(min-width: 769px) {
+            .sidebar.collapsed {
+                width: 80px;
+            }
+
+            .sidebar.collapsed .link-text {
+                display: none !important;
+            }
+        }
+
+        /* ==== MOBILE MODE ==== */
+        @media (max-width: 768px) {
+
+            /* Sidebar tertutup */
+            .sidebar {
+                left: -260px;
+                width: 250px !important;
+                /* selalu full di mobile */
+            }
+
+            /* Sidebar terbuka */
+            .sidebar.open {
+                left: 0;
+            }
+
+            /* Pastikan link-text SELALU tampil */
+            .sidebar .link-text {
+                display: inline !important;
+            }
+
+            .sidebar a {
+                padding: 14px 22px;
+            }
+        }
+
+        /* Styling link text */
+        .sidebar .link-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-left: 6px;
+            opacity: 0.9;
+        }
+
+        .sidebar a:hover .link-text {
+            opacity: 1;
+        }
+
+        /* TEKS MENU */
+        .sidebar a {
+            color: #d7d9e4;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 10px;
+            margin: 6px 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            background: transparent;
+            text-decoration: none !important;
+            /* hilangkan gaya link */
+            transition: 0.25s ease;
+        }
+
+        /* Ikon */
+        .sidebar a i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: rgba(0, 110, 255, 0.25);
+            border-left: 4px solid #0d6efd;
+            color: #ffffff !important;
+            transform: translateX(3px);
+        }
+
+        /* Overlay mobile */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            display: none;
+            z-index: 800;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* CONTENT */
+        .content {
+            margin-left: 250px;
+            padding: 120px 40px 40px;
+            transition: 0.3s ease;
+            width: 100%;
+        }
+
+        /* Jika sidebar collapsed di desktop */
+        @media(min-width: 769px) {
+            .sidebar.collapsed~.content {
+                margin-left: 80px;
+            }
+        }
+
+        /* Mobile content */
+        @media(max-width: 768px) {
+            .content {
+                margin-left: 0 !important;
+                padding-top: 110px;
+            }
+        }
+
+
+        /* ===== MONTH BUTTON ===== */
+        .month-btn {
+            background: #1a1d27;
+            padding: 28px 15px;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            display: block;
+            border: 1px solid #272a38;
+            transition: 0.25s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, .35);
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+
+        .month-btn:hover {
+            background: #0d6efd;
+            color: #fff;
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.4);
+        }
+
+        /* ===== LIGHT MODE ===== */
+        .light-mode body {
+            background: #f4f4f8;
+            color: #2b2b2b;
+        }
+
+        .light-mode .top-header {
+            background: #ffffff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Brand title tetap biru */
+        .light-mode .brand-title {
+            color: #0d6efd;
+        }
+
+        /* ==== FIX UNTUK TOMBOL ==== */
+
+        /* Tombol toggle tema */
+        .light-mode #themeToggle {
+            background: #e8e8e8;
+            color: #222 !important;
+        }
+
+        /* Ikon di dalam tombol tema */
+        .light-mode #themeToggle i {
+            color: #222 !important;
+        }
+
+        /* Tombol menu/sidebar toggle */
+        .light-mode .header-toggle-btn {
+            color: #222 !important;
+            background: transparent;
+        }
+
+        /* Hover untuk kedua tombol di light mode */
+        .light-mode #themeToggle:hover,
+        .light-mode .header-toggle-btn:hover {
+            background: #f0f0f0;
+        }
+
+        /* ==== SIDEBAR ==== */
+        .light-mode .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+        }
+
+        .light-mode .sidebar a {
+            color: #333;
+            border-radius: 6px;
+        }
+
+        .light-mode .sidebar a:hover,
+        .light-mode .sidebar .active {
+            background: rgba(13, 110, 253, 0.15);
+            color: #0d6efd !important;
+            border-left: 4px solid #0d6efd;
+        }
+
+        /* ==== MONTH BUTTON ==== */
+        .light-mode .month-btn {
+            background: #ffffff;
+            color: #2b2b2b;
+            border: 1px solid #cfcfe0;
+        }
+
+        .light-mode .month-btn:hover {
+            background: #0d6efd;
+            color: #ffffff !important;
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.45);
+        }
+
+        /* ==== CONTENT ==== */
+        .light-mode .content {
+            color: #222;
+        }
+
+
+        /* ===== ABOUT ===== */
+        /* SOSMED BUTTONS */
+        .social-btn {
+            background: #1a1d27;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid #272a38;
+            transition: 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e5e5e5;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: #0d6efd;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #002df5;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+        }
+
+        /* ===== WORLD CUP CONTENT STYLE ===== */
+        .worldcup-container {
+            text-align: center;
+        }
+
+        .worldcup-container img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            transition: 0.3s ease;
+        }
+
+        .worldcup-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .worldcup-title {
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        .worldcup-desc {
+            max-width: 550px;
+            margin: auto;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            opacity: 0.85;
+        }
+
+        .worldcup-badge {
+            background: #0d6efd;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            padding: 10px 22px;
+            display: inline-block;
+            margin-top: 25px;
+            box-shadow: 0 0 10px rgba(13, 110, 253, 0.4);
+        }
+
+        /* Icon Trophy */
+        .worldcup-icon {
+            font-size: 90px;
+            color: #0d6efd;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: 0.3s ease;
+        }
+
+        .worldcup-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* DASHBOARD */
+
+        /* ============================
+   DEFAULT THEME (DARK MODE)
+============================ */
+        .stat-card {
+            background: #1f1f1f;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+            color: #e4e4e4;
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: #262626;
+        }
+
+        .calendar-box {
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+            color: #e4e4e4;
+        }
+
+        .calendar-date {
+            background: #2c2c2c;
+            padding: 6px 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            color: #dcdcdc;
+        }
+
+        .today {
+            background: #304f6b !important;
+            border-left: 4px solid #74b4ff;
+        }
+
+        /* LIGHT MODE STYLES FOR DASHBOARD */
+        /* ============================
+   LIGHT MODE (ACTIVE WHEN .light-mode)
+============================ */
+        .light-mode .stat-card {
+            background: #ffffff;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .light-mode .stat-card:hover {
+            background: #f7f7f7;
+        }
+
+        .light-mode .calendar-box {
+            background: #ffffff;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .light-mode .calendar-date {
+            background: #f1f1f1;
+            color: #333;
+        }
+
+        .light-mode .today {
+            background: #cfe2ff !important;
+            border-left: 4px solid #0d6efd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== TOP HEADER ========== -->
+    <div class="top-header">
+        <span class="brand-title">YouthMedia</span>
+
+        <button id="themeToggle" class="btn btn-sm text-light">
+            <i class="bi bi-sun-fill"></i>
+        </button>
+
+        <button class="header-toggle-btn" id="headerToggle">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="wrapper">
+
+        <!-- ===== SIDEBAR ===== -->
+        <nav id="sidebar" class="sidebar collapsed">
+            <a href="/">
+                <i class="bi bi-house-door me-2"></i>
+                <span class="link-text">Dashboard</span>
+            </a>
+            <a href="/bulan">
+                <i class="bi bi-moon-stars me-2"></i>
+                <span class="link-text">Bulan</span>
+            </a>
+            <a href="/about">
+                <i class="bi bi-info-circle me-2"></i>
+                <span class="link-text">Tentang</span>
+            </a>
+            <a href="/piala">
+                <i class="bi bi-trophy me-2"></i>
+                <span class="link-text">Piala Dunia</span>
+            </a>
+
+        </nav>
+
+        <div class="overlay" id="overlay"></div>
+
+        <!-- ===== CONTENT ===== -->
+        <main class="content">
+            <%- body %> <!-- INI TEMPAT KONTEN MASUK -->
+        </main>
+    </div>
+
+    <!-- JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            const headerToggle = document.getElementById("headerToggle");
+
+            /* ===== TOGGLE SIDEBAR ===== */
+            headerToggle.addEventListener("click", () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle("open");
+                    overlay.classList.toggle("active");
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                }
+            });
+
+            /* ===== OVERLAY CLOSE ===== */
+            overlay.addEventListener("click", () => {
+                sidebar.classList.remove("open");
+                overlay.classList.remove("active");
+            });
+
+            /* ===== AUTO ACTIVE PAGE ===== */
+            /* ===== AUTO ACTIVE PAGE ===== */
+            const currentPath = location.pathname;
+            const menuLinks = document.querySelectorAll(".sidebar a");
+
+            menuLinks.forEach(link => {
+                const linkPath = link.getAttribute("href");
+
+                if (linkPath === currentPath) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+
+        });
+
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = themeToggle.querySelector("i");
+
+        /* ===== LOAD THEME FROM LOCAL STORAGE ===== */
+        if (localStorage.getItem("theme") === "light") {
+            document.documentElement.classList.add("light-mode");
+            themeIcon.classList.replace("bi-sun-fill", "bi-moon-fill");
+        } else {
+            themeIcon.classList.add("bi-sun-fill");
+        }
+
+        /* ===== TOGGLE THEME ===== */
+        themeToggle.addEventListener("click", () => {
+            document.documentElement.classList.toggle("light-mode");
+
+            if (document.documentElement.classList.contains("light-mode")) {
+                themeIcon.classList.replace("bi-sun-fill", "bi-moon-fill");
+                localStorage.setItem("theme", "light");
+            } else {
+                themeIcon.classList.replace("bi-moon-fill", "bi-sun-fill");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
