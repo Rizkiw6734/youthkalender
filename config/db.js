@@ -1,15 +1,16 @@
 const mysql = require("mysql2");
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "youthmedia"
-});
+// Gunakan URL langsung dari Railway
+const db = mysql.createConnection(
+  "mysql://root:ypnYOuiNOgLNTbDOPxQsqbZgnMyFBVYq@metro.proxy.rlwy.net:20493/railway"
+);
 
 db.connect((err) => {
-    if (err) throw err;
-    console.log("MySQL Connected!");
+  if (err) {
+    console.log("Gagal koneksi ke Railway:", err.message);
+  } else {
+    console.log("Database Railway tersambung!");
+  }
 });
 
 module.exports = db;
