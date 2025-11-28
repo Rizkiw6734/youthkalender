@@ -32,6 +32,13 @@ app.use(
     })
 );
 
+app.get("/test-db", async (req, res) => {
+    db.query("SELECT * FROM admins LIMIT 1", (err, results) => {
+        if(err) return res.status(500).send(err.message);
+        res.send(results);
+    });
+});
+
 // ❗ Session tersedia di EJS
 app.use((req, res, next) => {
     res.locals.admin = req.session.admin || null;
