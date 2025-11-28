@@ -1,0 +1,12 @@
+<h1>Edit Bulan</h1>
+<form action="/admin/bulan/edit/<%= bulan.id %>" method="POST">
+    <div class="mb-3">
+        <label>Nama Bulan</label>
+        <input type="text" name="nama_bulan" class="form-control" value="<%= bulan.nama_bulan %>" required>
+    </div>
+    <div class="mb-3">
+        <label>Deskripsi</label>
+        <textarea name="deskripsi" class="form-control" rows="3"><%= bulan.deskripsi %></textarea>
+    </div>
+    <button class="btn btn-primary">Perbarui</button>
+</form>

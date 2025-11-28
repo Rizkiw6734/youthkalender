@@ -4,7 +4,6 @@ const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
 const db = require("./config/db"); // ← pastikan path-nya sesuai
 
-
 const app = express();
 
 // Middleware body parser
@@ -33,11 +32,14 @@ app.use(
 );
 
 app.get("/test-db", async (req, res) => {
-    db.query("SELECT * FROM admins LIMIT 1", (err, results) => {
-        if(err) return res.status(500).send(err.message);
-        res.send(results);
-    });
+  try {
+    const [rows] = await db.query("SELECT * FROM admins LIMIT 1");
+    res.json(rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
+
 
 // ❗ Session tersedia di EJS
 app.use((req, res, next) => {
@@ -83,6 +85,8 @@ app.get("/bulan", (req, res) => {
 
 // 🔥 Router admin
 const adminRouter = require("./routes/adminRoutes");
+// 🔥 Router admin bulan
+const adminBulanRouter = require("./routes/bulanRoutes");
 
 // Halaman login → tidak boleh dibuka jika sudah login
 app.use("/admin/login", preventLoggedIn);
@@ -100,6 +104,8 @@ app.use("/admin", (req, res, next) => {
 });
 
 app.use("/admin", adminRouter);
+
+app.use("/admin/bulan", adminBulanRouter);
 
 // DASHBOARD PUBLIC
 app.get("/", (req, res) => {
