@@ -13,14 +13,13 @@ module.exports = {
     },
 
     // proses login
-    loginProcess: (req, res) => {
-        const { username, password } = req.body; // ⬅️ password harus diambil dari body
+    loginProcess: async (req, res) => {
+        const { username, password } = req.body;
 
-        // cek admin di database
-        db.query("SELECT * FROM admins WHERE username = ?", [username], async (err, results) => {
-            if (err) throw err;
+        try {
+            // pakai pool dengan promise
+            const [results] = await db.query("SELECT * FROM admins WHERE username = ?", [username]);
 
-            // username tidak ditemukan
             if (results.length === 0) {
                 return res.render("admin/login", {
                     layout: "layouts/admin",
@@ -31,7 +30,6 @@ module.exports = {
 
             const admin = results[0];
 
-            // cek kecocokan password
             const validPassword = await bcrypt.compare(password, admin.password);
 
             if (!validPassword) {
@@ -42,17 +40,25 @@ module.exports = {
                 });
             }
 
-            // simpan session (sesuaikan dengan kolom tabel)
+            // simpan session
             req.session.admin = {
                 id: admin.id,
                 username: admin.username
             };
 
             res.redirect("/admin/dashboard");
-        });
+
+        } catch (err) {
+            console.log(err);
+            res.render("admin/login", {
+                layout: "layouts/admin",
+                title: "Login Admin",
+                error: "Terjadi kesalahan server"
+            });
+        }
     },
 
-    // halaman dashboard admin
+    // halaman dashboard
     dashboard: (req, res) => {
         res.render("admin/dashboard", {
             layout: "layouts/admin",
